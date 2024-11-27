@@ -5,7 +5,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import dotenv from 'dotenv';
 
 dotenv.config({
-    path: './.config.env'
+    path: './.Config.env'
 });
 
 app.use('/', (req: Request, res:Response, next: NextFunction): void => {
