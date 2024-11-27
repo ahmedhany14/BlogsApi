@@ -6,29 +6,39 @@ import { Get, Post } from '../../Common/Decorators/routes';
 
 import { appError, ValidationError, BadRequestError, AuthError } from '../../Common/error/appError';
 
-@Controller('auht')
+import { IRequestProfile } from '../../Common/interface/IRequest';
+
+@Controller('auth')
 class AuthController {
 
 	@Get('/login')
 	@validator('email', 'password')
-	login(req: Request, res: Response, next: NextFunction): void {
-		const { email, password } = req.body;
+	login(request: IRequestProfile, response: Response, next: NextFunction): void {
+		const { email, password } = request.body;
 
 		if (!email || !password) {
 			return next(new BadRequestError('Email and password are required'));
 		}
 
 		/*
-		check for user in the database and his password here
+		user here;
 		 */
-
-		response.send('Login page');
+		request.profile = {
+			id: '12345', // temporary profile id
+			role: 'admin' // temporary profile role
+		};
+		response.status(200).json({
+			status: 'success',
+			data: {
+				profile: request.profile
+			}
+		});
 	}
 
 	@Post('/register')
 	@validator('email', 'password', 'confirmPassword')
-	register(req: Request, res: Response, next: NextFunction): void {
-		const { email, password, confirmPassword } = req.body;
+	register(request: IRequestProfile, response: Response, next: NextFunction): void {
+		const { email, password, confirmPassword } = request.body;
 
 		if (!email || !password || !confirmPassword) {
 			return next(new BadRequestError('Email and password are required'));
@@ -39,9 +49,19 @@ class AuthController {
 		}
 
 		/*
-		register user here
+		user here;
 		 */
 
-		res.send('Register page');
+		request.profile = {
+			id: '12345', // temporary profile id
+			role: 'admin' // temporary profile role
+		};
+
+		response.status(201).json({
+			status: 'success',
+			data: {
+				profile: request.profile
+			}
+		});
 	}
 }
