@@ -4,7 +4,7 @@ import { Controller } from '../../Common/Decorators/Controller';
 import { validator } from '../../Common/Decorators/validator';
 import { Get, Post } from '../../Common/Decorators/routes';
 
-import { appError,ValidationError,BadRequestError,AuthError } from '../../Common/error/appError';
+import { appError, ValidationError, BadRequestError, AuthError } from '../../Common/error/appError';
 
 @Controller('auht')
 class AuthController {
@@ -14,7 +14,7 @@ class AuthController {
 	login(req: Request, res: Response, next: NextFunction): void {
 		const { email, password } = req.body;
 
-		if(!email || !password) {
+		if (!email || !password) {
 			return next(new BadRequestError('Email and password are required'));
 		}
 
@@ -28,13 +28,13 @@ class AuthController {
 	@Post('/register')
 	@validator('email', 'password', 'confirmPassword')
 	register(req: Request, res: Response, next: NextFunction): void {
-		const { email, password,confirmPassword } = req.body;
+		const { email, password, confirmPassword } = req.body;
 
-		if(!email || !password || !confirmPassword) {
+		if (!email || !password || !confirmPassword) {
 			return next(new BadRequestError('Email and password are required'));
 		}
 
-		if(password !== confirmPassword) {
+		if (password !== confirmPassword) {
 			return next(new ValidationError('Password and confirm password do not match'));
 		}
 
