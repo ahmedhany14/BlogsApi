@@ -1,6 +1,11 @@
+import 'reflect-metadata';
+
 import  router from "../../app";
+
 import { IMethods } from "./types/IMethods";
 import { IMetedata } from "./types/IMetedata";
+
+import BodyCheck from "../middleware/BodyCheck";
 
 export function Controller(routePrefix: string) {
 	return function (target: Function) {
@@ -18,6 +23,7 @@ export function Controller(routePrefix: string) {
 				router[method](
 					`${routePrefix}${path}`,
 					...middlewares,
+					BodyCheck(...validatorBody),
 					functionHandler
 				);
 			}
