@@ -4,6 +4,7 @@ import router, { app } from './app';
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 
+import { errorHandler } from './Common/error/errorHandler';
 import { appError } from './Common/error/appError';
 
 dotenv.config({
@@ -11,7 +12,7 @@ dotenv.config({
 });
 
 app.use('/', (req: Request, res: Response, next: NextFunction): void => {
-	res.send('welcome to the server');
+	next(new appError('Page not found', 404));
 });
 
 app.use('/blogApi', router);
@@ -19,6 +20,8 @@ app.use('/blogApi', router);
 app.use('*', (req: Request, res: Response, next: NextFunction): void => {
 	next(new appError('Page not found', 404));
 });
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT, (): void => {
 	dataBaseConfig.connect();
