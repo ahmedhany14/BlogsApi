@@ -24,9 +24,20 @@ class UserService {
 			if (!user) next(new appError('User not found', 404));
 			return user as IUserDocument;
 		} catch (error) {
-			next(new appError('cannot get user', 500));
+			return next(new appError('cannot get user', 500));
 		}
 	}
+
+	public async getUserByEmail(email: string, next: NextFunction): Promise<IUserDocument | void> {
+		try {
+			const user = await User.findOne({ email: email });
+			if (!user) next(new appError('User not found', 404));
+			return user as IUserDocument;
+		} catch (error) {
+			return next(new appError('cannot get user', 500));
+		}
+	}
+
 }
 
 const userService = new UserService();
