@@ -51,9 +51,16 @@ export class BlogService {
 		}
 	}
 
-	public async deleteCommentFromBlog(id: string, commentId: string): Promise<IBlogDocument | null> {
+	public async deleteCommentFromBlog(id: string, commentId: string, userId: string): Promise<IBlogDocument | null> {
 		try {
-			const blog = await blogModel.findByIdAndUpdate(id, { $pull: { commentIds: commentId } }, { new: true });
+			const blog = await blogModel.findById(id);
+			if (!blog) return null;
+			const isUser = blog.usrId.toString() === userId.toString();
+			if (!isUser) return null;
+			const length = blog.commentIds.length;
+			blog.commentIds = blog.commentIds.filter((comment) => comment.toString() !== commentId);
+			if (length === blog.commentIds.length) return null;
+			await blog.save();
 			return blog;
 		}
 		catch (error) {

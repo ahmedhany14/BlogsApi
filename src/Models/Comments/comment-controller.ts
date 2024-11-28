@@ -12,6 +12,7 @@ import { Get, Post, Delete } from "../../Common/Decorators/routes";
 import { Controller } from "../../Common/Decorators/Controller";
 import { validator } from "../../Common/Decorators/validator";
 import { use } from "../../Common/Decorators/use";
+import { appError } from "../../Common/error/appError";
 
 
 @Controller('/comments')
@@ -25,14 +26,15 @@ class CommentController {
         const { text } = req.body;
         const userId = req.profile.id;
 
-        const blog = await blogService.addCommentToBlog(blogId, userId);
-
         const data: IComment = {
             text,
             createdAt: new Date(),
             user: userId
         }
         const comment = await commentService.addComment(data);
+
+        const blog = await blogService.addCommentToBlog(blogId, comment._id as string);
+
 
         res.status(201).json({
             status: 'success',
@@ -49,9 +51,13 @@ class CommentController {
         const { blogId, commentId } = req.params;
         const userId = req.profile.id;
 
-        const blog = await blogService.deleteCommentFromBlog(blogId, userId);
+        const blog = await blogService.deleteCommentFromBlog(blogId, commentId, userId);
 
+        if (!blog) {
+            return next(new appError(`Can't delete Comment`, 404));
+        }
         await commentService.deleteComment(commentId);
+        
 
         res.status(204).json({
             status: 'success',
