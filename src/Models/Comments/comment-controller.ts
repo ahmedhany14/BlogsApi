@@ -42,4 +42,23 @@ class CommentController {
             }
         });
     }
+
+    @Delete('/delete/:blogId/:commentId')
+    @use(authService.protect)
+    public async deleteComment(req: IRequestProfile, res: Response, next: NextFunction) {
+        const { blogId, commentId } = req.params;
+        const userId = req.profile.id;
+
+        const blog = await blogService.deleteCommentFromBlog(blogId, userId);
+
+        await commentService.deleteComment(commentId);
+
+        res.status(204).json({
+            status: 'success',
+            data: {
+                blog
+            }
+        });
+    }
+
 }

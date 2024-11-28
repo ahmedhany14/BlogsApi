@@ -10,6 +10,10 @@ class CommentService {
         const comment = await Comment.create(blog);
         return comment;
     }
+
+    public async deleteComment(commentId: string): Promise<void> {
+        await Comment.findByIdAndDelete(commentId);
+    }
 }
 
 const commentService = new CommentService();

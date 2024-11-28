@@ -51,6 +51,15 @@ export class BlogService {
 		}
 	}
 
+	public async deleteCommentFromBlog(id: string, commentId: string): Promise<IBlogDocument | null> {
+		try {
+			const blog = await blogModel.findByIdAndUpdate(id, { $pull: { commentIds: commentId } }, { new: true });
+		}
+		catch (error) {
+			return null;
+		}
+	}
+
 }
 
 const blogService = new BlogService();
