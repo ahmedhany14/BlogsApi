@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Get, Post, Delete } from '../../Common/Decorators/routes';
 import { Controller } from '../../Common/Decorators/Controller';
-import {validator} from '../../Common/Decorators/validator';
+import { validator } from '../../Common/Decorators/validator';
 import { use } from '../../Common/Decorators/use';
 
 import { appError, NotFoundError, BadRequestError, ValidationError } from '../../Common/error/appError';
@@ -17,20 +17,20 @@ import { IBlog, IBlogDocument } from './entitie/IBlog';
 class BlogController {
 
 	@Get('/:id')
-	public async getBlogs(req: Request, res: Response, next: NextFunction) {
-		const blogId = req.params.id;
-		console.log(blogId);
+	public async getBlogs(request: Request, response: Response, next: NextFunction) {
+		const blogId = request.params.id;
+
 		if (!blogId) {
 			return next(new BadRequestError('Blog id is required'));
 		}
 
-		const blog = await blogService.getBlogById(blogId);
+		const blog = await blogService.getBlogById(blogId, next);
 
-		if (!blog) {
+		if(!blog){
 			return next(new NotFoundError('Blog not found'));
 		}
 
-		res.status(200).json({
+		response.status(200).json({
 			message: 'Blog found',
 			blog
 		});
@@ -68,13 +68,13 @@ class BlogController {
 	public async deleteBlog(req: Request, res: Response, next: NextFunction) {
 		const blogId = req.params.id;
 
-		if(!blogId) {
+		if (!blogId) {
 			return next(new BadRequestError('Blog id is required'));
 		}
 
 		const blog = await blogService.deleteBlog(blogId);
 
-		if(!blog) {
+		if (!blog) {
 			return next(new NotFoundError('Blog not found'));
 		}
 
