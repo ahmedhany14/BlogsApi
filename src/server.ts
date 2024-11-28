@@ -8,7 +8,7 @@ import { errorHandler } from './Common/error/errorHandler';
 import { appError } from './Common/error/appError';
 
 import './Models/Blogs/blog-controller';
-
+import './Models/Auth/auth-contoroller';
 dotenv.config({
 	path: './.Config.env'
 });

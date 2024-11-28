@@ -14,4 +14,5 @@ class appRouter {
 
 const router = new appRouter().getInitialRoute();
 export const app = express();
+app.use(express.json());
 export default router;
