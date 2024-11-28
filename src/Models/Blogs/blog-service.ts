@@ -10,13 +10,13 @@ export class BlogService {
 	}
 
 	public async getBlogs(): Promise<IBlogDocument[]> {
-		const blogs = await blogModel.find();
+		const blogs = await blogModel.find().populate('usrId').populate('commentIds');
 		return blogs;
 	}
 
 	public async getBlogById(id: string, next: NextFunction): Promise<IBlogDocument | void> {
 		try {
-			const blog = await blogModel.findById(id);
+			const blog = await blogModel.findById(id).populate('usrId').populate('commentIds');
 			return blog as IBlogDocument;
 		} catch (error) {
 			return next(new NotFoundError('Blog not found'));
