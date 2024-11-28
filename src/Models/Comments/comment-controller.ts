@@ -17,7 +17,7 @@ import { use } from "../../Common/Decorators/use";
 @Controller('/comments')
 class CommentController {
 
-    @Post('add/:blogId')
+    @Post('/add/:blogId')
     @validator('text')
     @use(authService.protect)
     public async addComment(req: IRequestProfile, res: Response, next: NextFunction) {
@@ -25,9 +25,8 @@ class CommentController {
         const { text } = req.body;
         const userId = req.profile.id;
 
-        /*
-        const blog = await blogService.addCommentToBlog(blogId, userId, text);
-        */
+        const blog = await blogService.addCommentToBlog(blogId, userId);
+
         const data: IComment = {
             text,
             createdAt: new Date(),
@@ -37,7 +36,10 @@ class CommentController {
 
         res.status(201).json({
             status: 'success',
-            data: {}
+            data: {
+                comment,
+                blog
+            }
         });
     }
 }
