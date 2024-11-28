@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, response } from 'express';
+import {Response, NextFunction } from 'express';
 
 import { Controller } from '../../Common/Decorators/Controller';
 import { validator } from '../../Common/Decorators/validator';
@@ -13,10 +13,10 @@ import userService from '../User/user-service';
 import authService from './service/auth-service';
 import { use } from '../../Common/Decorators/use';
 
-@Controller('auth')
+@Controller('/auth')
 class AuthController {
 
-	@Get('/login')
+	@Post('/login')
 	@validator('email', 'password')
 	public async login(request: IRequestProfile, response: Response, next: NextFunction): Promise<void> {
 		const { email, password } = request.body;
@@ -46,8 +46,8 @@ class AuthController {
 	@Post('/register')
 	@validator('email', 'password', 'confirmPassword', 'name')
 	public async register(request: IRequestProfile, response: Response, next: NextFunction): Promise<void> {
+		console.log(request.body);
 		const { email, password, confirmPassword, name } = request.body;
-
 		if (!email || !password || !confirmPassword) {
 			return next(new BadRequestError('Email and password are required'));
 		}
