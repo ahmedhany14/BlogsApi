@@ -47,11 +47,8 @@ class BlogController {
 			title: title as string,
 			content: content as string,
 			createAt: new Date(),
-			reacts: {
-				like: 0,
-				dislike: 0,
-				love: 0
-			},
+			like: 0,
+			dislike: 0,
 			usrId: userId,
 			commentIds: [] as string[]
 		};
@@ -107,5 +104,27 @@ class BlogController {
 			blog
 		});
 
+	}
+
+	@Post('/:id/react')
+	@validator('react')
+	@use(authService.protect)
+	public async reactBlog(request: IRequestProfile, response: Response, next: NextFunction) {
+		const blogId = request.params.id;
+		const react = request.body.react;
+		if (['like', 'dislike', 'love'].indexOf(react) === -1) return next(new ValidationError('Invalid react'));
+
+		if (!blogId) return next(new BadRequestError('Blog id is required'));
+
+		const blog = await blogService.reactToBlog(blogId, react);
+
+		if (!blog) {
+			return next(new NotFoundError('Blog not found'));
+		}
+
+		response.status(200).json({
+			message: 'Blog reacted',
+			blog
+		});
 	}
 }

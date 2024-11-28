@@ -13,19 +13,13 @@ const blogSchema: mongoose.Schema = new mongoose.Schema({
 	createAt: {
 		type: Date
 	},
-	reacts: {
-		like: {
-			type: Number,
-			default: 0
-		},
-		dislike: {
-			type: Number,
-			default: 0
-		},
-		love: {
-			type: Number,
-			default: 0
-		}
+	like: {
+		type: Number,
+		default: 0
+	},
+	dislike: {
+		type: Number,
+		default: 0
 	},
 	usrId: {
 		type: mongoose.Schema.Types.ObjectId,
