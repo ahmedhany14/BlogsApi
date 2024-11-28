@@ -7,12 +7,15 @@ import { use } from '../../Common/Decorators/use';
 
 import { appError, NotFoundError, BadRequestError, ValidationError } from '../../Common/error/appError';
 
+import authService from '../Auth/service/auth-service';
 import blogService from './blog-service';
 
+import { IRequestProfile } from '../../Common/interface/IRequest';
 import { IBlog, IBlogDocument } from './entitie/IBlog';
 
 @Controller('/blogs')
 class BlogController {
+
 	@Get('/:id')
 	public async getBlogs(req: Request, res: Response, next: NextFunction) {
 		const blogId = req.params.id;
@@ -35,9 +38,11 @@ class BlogController {
 
 	@Post('/')
 	@validator('title', 'content')
-	public async createBlog(req: Request, res: Response, next: NextFunction) {
-		const { title, content } = req.body;
+	@use(authService.protect)
+	public async createBlog(request: IRequestProfile, response: Response, next: NextFunction) {
+		const { title, content } = request.body;
 
+		const userId = request.profile.id;
 		const blog = {
 			title: title as string,
 			content: content as string,
@@ -47,13 +52,13 @@ class BlogController {
 				dislike: 0,
 				love: 0
 			},
-			usrId: '',
+			usrId: userId,
 			commentIds: [] as string[]
 		};
 
 		const newBlog = await blogService.createBlog(blog as IBlogDocument);
 
-		res.status(201).json({
+		response.status(201).json({
 			message: 'Blog created',
 			blog: newBlog
 		});

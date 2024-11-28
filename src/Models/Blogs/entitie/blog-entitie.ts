@@ -28,8 +28,9 @@ const blogSchema: mongoose.Schema = new mongoose.Schema({
 		}
 	},
 	usrId: {
-		type: String,
-		required: true
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: 'User'
 	},
 	commentIds: {
 		type: [String]
