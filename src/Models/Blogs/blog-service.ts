@@ -74,6 +74,16 @@ export class BlogService {
 		}
 	}
 
+	public async reactToBlog(id: string, react: string): Promise<IBlogDocument | void> {
+		try {
+			const blog = await blogModel.findByIdAndUpdate(id, { $inc: { [react]: 1 } }, { new: true });
+			console.log(blog);
+			return blog as IBlogDocument;
+		} catch (error) {
+			console.log(error);
+		}
+
+	}
 }
 
 const blogService = new BlogService();

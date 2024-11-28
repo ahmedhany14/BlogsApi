@@ -4,13 +4,10 @@ export interface IBlog {
 	title: string;
 	content: string;
 	createAt: Date;
-	reacts:{
-		like: number;
-		dislike: number;
-		love: number;
-	}
+	like: number;
+	dislike: number;
 	usrId: string;
 	commentIds: string[];
 }
 
-export interface IBlogDocument extends IBlog, Document {}
+export interface IBlogDocument extends IBlog, Document { }
