@@ -33,7 +33,8 @@ const blogSchema: mongoose.Schema = new mongoose.Schema({
 		ref: 'User'
 	},
 	commentIds: {
-		type: [String]
+		type: [mongoose.Schema.Types.ObjectId],
+		ref: 'Comment'
 	}
 });
 
