@@ -16,7 +16,13 @@ export class BlogService {
 
 	public async getBlogById(id: string, next: NextFunction): Promise<IBlogDocument | void> {
 		try {
-			const blog = await blogModel.findById(id).populate('usrId').populate('commentIds');
+			const blog = await blogModel.findById(id).populate('usrId').populate('commentIds').populate({
+				path: 'commentIds',
+				populate: {
+					path: 'user',
+					model: 'User'
+				}
+			}).select('-usrId.password');
 			return blog as IBlogDocument;
 		} catch (error) {
 			return next(new NotFoundError('Blog not found'));
