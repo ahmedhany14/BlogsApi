@@ -3,15 +3,16 @@ import {Response, NextFunction } from 'express';
 import { Controller } from '../../Common/Decorators/Controller';
 import { validator } from '../../Common/Decorators/validator';
 import { Get, Post } from '../../Common/Decorators/routes';
+import { use } from '../../Common/Decorators/use';
 
 import { appError, ValidationError, BadRequestError, AuthError } from '../../Common/error/appError';
 
 import { IRequestProfile } from '../../Common/interface/IRequest';
 import { IUser, IUserDocument } from '../User/entitie/IUser';
 
-import userService from '../User/user-service';
+import tokenService from './service/token-service';
 import authService from './service/auth-service';
-import { use } from '../../Common/Decorators/use';
+import userService from '../User/user-service';
 
 @Controller('/auth')
 class AuthController {
@@ -30,16 +31,10 @@ class AuthController {
 			return next(new AuthError('Invalid email or password'));
 		}
 
-		request.profile = {
-			id: user._id as string,
-			role: user.role
-		};
-
+		const token = authService.createToken(user._id as string, response);
 		response.status(200).json({
 			status: 'success',
-			data: {
-				profile: request.profile
-			}
+			token
 		});
 	}
 
