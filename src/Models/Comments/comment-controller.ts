@@ -3,9 +3,10 @@ import { Request, Response, NextFunction } from "express";
 import authService from "../Auth/service/auth-service";
 import blogService from "../Blogs/blog-service";
 import userService from "../User/user-service";
+import commentService from "./comment-service";
 
-import { ICommentDocument } from "./entitie/IComment";
 import { IRequestProfile } from "../../Common/interface/IRequest";
+import { IComment, ICommentDocument } from "./entitie/IComment";
 
 import { Get, Post, Delete } from "../../Common/Decorators/routes";
 import { Controller } from "../../Common/Decorators/Controller";
@@ -26,9 +27,13 @@ class CommentController {
 
         /*
         const blog = await blogService.addCommentToBlog(blogId, userId, text);
-        const comment = await commentService.addComment(userId, blogId, text);
         */
-
+        const data: IComment = {
+            text,
+            createdAt: new Date(),
+            user: userId
+        }
+        const comment = await commentService.addComment(data);
 
         res.status(201).json({
             status: 'success',
