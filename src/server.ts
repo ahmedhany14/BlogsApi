@@ -9,6 +9,8 @@ import { appError } from './Common/error/appError';
 
 import './Models/Blogs/blog-controller';
 import './Models/Auth/auth-contoroller';
+import './Models/Comments/comment-controller';
+
 dotenv.config({
 	path: './.Config.env'
 });

@@ -40,6 +40,17 @@ export class BlogService {
 			return next(new NotFoundError('Cannot delete blog'));
 		}
 	}
+
+	public async addCommentToBlog(id: string, commentId: string): Promise<IBlogDocument | null> {
+		try {
+			const blog = await blogModel.findByIdAndUpdate(id, { $push: { commentIds: commentId } }, { new: true });
+			return blog;
+		}
+		catch (error) {
+			return null;
+		}
+	}
+
 }
 
 const blogService = new BlogService();
