@@ -1,5 +1,9 @@
-import blogModel from './entitie/blog-entitie';
+import { NextFunction } from 'express';
+
 import { IBlogDocument } from './entitie/IBlog';
+import blogModel from './entitie/blog-entitie';
+
+import { NotFoundError } from '../../Common/error/appError';
 
 export class BlogService {
 	constructor() {
@@ -10,9 +14,13 @@ export class BlogService {
 		return blogs;
 	}
 
-	public async getBlogById(id: string): Promise<IBlogDocument | null> {
-		const blog = await blogModel.findById(id);
-		return blog;
+	public async getBlogById(id: string, next: NextFunction): Promise<IBlogDocument | void> {
+		try {
+			const blog = await blogModel.findById(id);
+			return blog as IBlogDocument;
+		} catch (error) {
+			return next(new NotFoundError('Blog not found'));
+		}
 	}
 
 	public async createBlog(blog: IBlogDocument): Promise<IBlogDocument> {
@@ -24,9 +32,13 @@ export class BlogService {
 		return blog;
 	}
 
-	public async deleteBlog(id: string): Promise<IBlogDocument | null> {
-		const blog = await blogModel.findByIdAndDelete(id);
-		return blog;
+	public async deleteBlog(id: string, userId: string, next: NextFunction): Promise<IBlogDocument | void> {
+		try {
+			const blog = await blogModel.findOneAndDelete({ _id: id, usrId: userId });
+			return blog as IBlogDocument;
+		} catch (error) {
+			return next(new NotFoundError('Cannot delete blog'));
+		}
 	}
 }
 
