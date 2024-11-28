@@ -26,7 +26,7 @@ class BlogController {
 
 		const blog = await blogService.getBlogById(blogId, next);
 
-		if(!blog){
+		if (!blog) {
 			return next(new NotFoundError('Blog not found'));
 		}
 
@@ -65,20 +65,21 @@ class BlogController {
 	}
 
 	@Delete('/:id')
-	public async deleteBlog(req: Request, res: Response, next: NextFunction) {
-		const blogId = req.params.id;
-
+	@use(authService.protect)
+	public async DeleteUserBlog(request: IRequestProfile, response: Response, next: NextFunction) {
+		const blogId = request.params.id;
+		const userId = request.profile.id;
 		if (!blogId) {
 			return next(new BadRequestError('Blog id is required'));
 		}
 
-		const blog = await blogService.deleteBlog(blogId);
+		const blog = await blogService.deleteBlog(blogId, userId, next);
 
 		if (!blog) {
-			return next(new NotFoundError('Blog not found'));
+			return next(new NotFoundError('Cannot delete blog'));
 		}
 
-		res.status(200).json({
+		response.status(200).json({
 			message: 'Blog deleted',
 			blog
 		});

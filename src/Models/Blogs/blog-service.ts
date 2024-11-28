@@ -4,6 +4,7 @@ import { IBlogDocument } from './entitie/IBlog';
 import blogModel from './entitie/blog-entitie';
 
 import { NotFoundError } from '../../Common/error/appError';
+
 export class BlogService {
 	constructor() {
 	}
@@ -31,9 +32,13 @@ export class BlogService {
 		return blog;
 	}
 
-	public async deleteBlog(id: string): Promise<IBlogDocument | null> {
-		const blog = await blogModel.findByIdAndDelete(id);
-		return blog;
+	public async deleteBlog(id: string, userId: string, next: NextFunction): Promise<IBlogDocument | void> {
+		try {
+			const blog = await blogModel.findOneAndDelete({ _id: id, usrId: userId });
+			return blog as IBlogDocument;
+		} catch (error) {
+			return next(new NotFoundError('Cannot delete blog'));
+		}
 	}
 }
 
